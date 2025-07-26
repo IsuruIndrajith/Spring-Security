@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,16 +19,20 @@ import static org.springframework.security.config.Customizer.withDefaults;
 //because specifying custom security configurations here,
 @Configuration
 @EnableWebSecurity
+//for the RoleBased Authentication
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
 
-//        making java session stateless
+//        making java session(cookies) stateless
         http.sessionManagement(session
         -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//        form based Authentication
+
+
+        //        form based Authentication
 //        http.formLogin(withDefaults());
         
 //        basic Authentication
@@ -42,6 +47,7 @@ public class SecurityConfig {
         UserDetails user1 = User.withUsername("user1")
 //                {noop} making unable to read (encoding the password)
                 .password("{noop}password1")
+//                Roles given for the role based authentication
                 .roles("USER")
                 .build();
 
