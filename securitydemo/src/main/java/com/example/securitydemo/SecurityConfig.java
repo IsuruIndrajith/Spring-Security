@@ -14,6 +14,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -62,13 +64,13 @@ public class SecurityConfig {
 
         UserDetails user1 = User.withUsername("user1")
 //                {noop} making unable to read (encoding the password)
-                .password("{noop}password1")
+                .password(passwordEncoder().encode("password1"))
 //                Roles given for the role based authentication
                 .roles("USER")
                 .build();
 
         UserDetails admin = User.withUsername("admin")
-                .password("{noop}adminPass")
+                .password(passwordEncoder().encode("adminPass"))
                 .roles("ADMIN")
                 .build();
 
@@ -85,6 +87,12 @@ public class SecurityConfig {
 //        passing the objects of type UserDetails (user1, admin)
 
 //        return new InMemoryUserDetailsManager(user1, admin);
+    }
+
+//    Hashing
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
 }
